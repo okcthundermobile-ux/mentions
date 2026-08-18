@@ -1,0 +1,42 @@
+# Firebase App Hosting configuration.
+# Docs: https://firebase.google.com/docs/app-hosting/configure
+
+runConfig:
+  minInstances: 0
+  maxInstances: 5
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+
+env:
+  # Secrets — create them with the CLI before deploying, e.g.:
+  #   firebase apphosting:secrets:set NEWS_API_KEY
+  #   firebase apphosting:secrets:set GEMINI_API_KEY
+  #   (GOOGLE_CSE_KEY and APIFY_API_TOKEN are optional article sources.)
+  - variable: NEWS_API_KEY
+    secret: NEWS_API_KEY
+    availability: [RUNTIME]
+  - variable: GEMINI_API_KEY
+    secret: GEMINI_API_KEY
+    availability: [RUNTIME]
+  - variable: GOOGLE_CSE_KEY
+    secret: GOOGLE_CSE_KEY
+    availability: [RUNTIME]
+  - variable: APIFY_API_TOKEN
+    secret: APIFY_API_TOKEN
+    availability: [RUNTIME]
+
+  # Non-secret configuration.
+  - variable: GOOGLE_CSE_ID
+    value: ''
+    availability: [RUNTIME]
+  - variable: APIFY_TARGET_URLS
+    value: ''
+    availability: [RUNTIME]
+
+  # The Python stats service (stats_service.py) is NOT deployed by App
+  # Hosting. Deploy it separately (e.g. Cloud Run) and set its public URL
+  # here; until then the Roster page shows its "stats service" error.
+  - variable: STATS_SERVICE_URL
+    value: ''
+    availability: [RUNTIME]

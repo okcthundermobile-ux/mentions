@@ -1,4 +1,5 @@
 import './globals.css';
+import Analytics from './analytics';
 
 export const metadata = {
   title: 'Thunder Hub — OKC Roster, News & Fan Pulse',
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
           </nav>
         </header>
         <main>{children}</main>
+        <Analytics />
         <footer className="site-footer">
           Data: NBA Stats · NewsAPI · Reddit · Sentiment: Gemini API.
           Not affiliated with the NBA or the Oklahoma City Thunder.

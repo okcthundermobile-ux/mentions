@@ -28,6 +28,29 @@ npm run dev                   # http://localhost:3000
 - **Fan Pulse** (`/pulse`) needs a free Gemini key from
   https://aistudio.google.com/apikey — no GCP setup required.
 
+## Deploy to Firebase App Hosting
+
+The repo is App Hosting ready: `npm run build` produces a standard Next.js
+build and `apphosting.yaml` declares runtime config and secrets.
+
+```bash
+# 1. Create the backend once (connects to this GitHub repo)
+firebase apphosting:backends:create --project thunder-mentions
+
+# 2. Store the API keys as secrets (values are read from stdin)
+firebase apphosting:secrets:set NEWS_API_KEY
+firebase apphosting:secrets:set GEMINI_API_KEY
+
+# 3. Every push to the live branch triggers a rollout automatically,
+#    or roll out manually:
+firebase apphosting:rollouts:create BACKEND_ID
+```
+
+- News and Fan Pulse work as soon as the secrets above are set.
+- **Roster & Stats** needs `stats_service.py` hosted elsewhere (it is Python
+  and App Hosting only runs the Next.js app). Deploy it to Cloud Run and set
+  `STATS_SERVICE_URL` in `apphosting.yaml` to its public URL.
+
 ## Deploy to Cloud Run
 
 ```bash
