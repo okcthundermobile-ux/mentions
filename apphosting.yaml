@@ -8,35 +8,18 @@ runConfig:
   cpu: 1
   memoryMiB: 512
 
+# Environment variables and secrets.
+# Create the secrets before the first rollout:
+#   firebase apphosting:secrets:set NEWS_API_KEY
+#   firebase apphosting:secrets:set GEMINI_API_KEY
+# The optional article sources (GOOGLE_CSE_KEY / APIFY_API_TOKEN) can be
+# added the same way later if you enable them.
 env:
-  # Secrets — create them with the CLI before deploying, e.g.:
-  #   firebase apphosting:secrets:set NEWS_API_KEY
-  #   firebase apphosting:secrets:set GEMINI_API_KEY
-  #   (GOOGLE_CSE_KEY and APIFY_API_TOKEN are optional article sources.)
   - variable: NEWS_API_KEY
     secret: NEWS_API_KEY
-    availability: [RUNTIME]
+    availability:
+      - RUNTIME
   - variable: GEMINI_API_KEY
     secret: GEMINI_API_KEY
-    availability: [RUNTIME]
-  - variable: GOOGLE_CSE_KEY
-    secret: GOOGLE_CSE_KEY
-    availability: [RUNTIME]
-  - variable: APIFY_API_TOKEN
-    secret: APIFY_API_TOKEN
-    availability: [RUNTIME]
-
-  # Non-secret configuration.
-  - variable: GOOGLE_CSE_ID
-    value: ''
-    availability: [RUNTIME]
-  - variable: APIFY_TARGET_URLS
-    value: ''
-    availability: [RUNTIME]
-
-  # The Python stats service (stats_service.py) is NOT deployed by App
-  # Hosting. Deploy it separately (e.g. Cloud Run) and set its public URL
-  # here; until then the Roster page shows its "stats service" error.
-  - variable: STATS_SERVICE_URL
-    value: ''
-    availability: [RUNTIME]
+    availability:
+      - RUNTIME
