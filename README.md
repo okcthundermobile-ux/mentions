@@ -1,8 +1,8 @@
 # Thunder Hub
 
 Three-page OKC Thunder site: **Roster & Stats** (`/`), **News** (`/news`),
-and **Fan Pulse** sentiment analysis (`/pulse`). Next.js 14 → Cloud Run.
-Full design rationale in `ARCHITECTURE.md`.
+and **Fan Pulse** sentiment analysis (`/pulse`). Next.js 14 → Firebase App
+Hosting (Cloud Run).
 
 Data sources: **NBA Stats API** (via `nba_api`, through a local FastAPI
 service) for roster/stats, **NewsAPI** for news, **Reddit** + NewsAPI/Google
