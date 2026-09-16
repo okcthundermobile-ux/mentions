@@ -2,7 +2,7 @@ import './globals.css';
 import Analytics from './analytics';
 
 export const metadata = {
-  title: 'Thunder Hub — OKC Roster, News & Fan Pulse',
+  title: 'Thunder Mentions — OKC Roster, News & Fan Pulse',
   description: 'Oklahoma City Thunder stats, news, and fan sentiment.',
 };
 
@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
       <body>
         <header className="site-header">
           <a href="/" className="wordmark">
-            THUNDER<span>HUB</span>
+            THUNDER<span>MENTIONS</span>
           </a>
           <nav>
             <a href="/">Roster</a>

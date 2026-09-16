@@ -27,30 +27,6 @@ const FIELDS = [
     link: 'https://console.apify.com/account/integrations',
     linkLabel: 'Get your token from the Apify console',
   },
-  {
-    key: 'googleCseKey',
-    label: 'Google Custom Search Key',
-    placeholder: '',
-    help: 'Optional extra article source for Fan Pulse. Pair with the Search Engine ID below.',
-    link: 'https://console.cloud.google.com/apis/library/customsearch.googleapis.com',
-    linkLabel: 'Enable the Custom Search API',
-  },
-  {
-    key: 'googleCseId',
-    label: 'Google Custom Search Engine ID',
-    placeholder: '',
-    help: 'The "cx" value for your programmable search engine.',
-    link: 'https://programmablesearchengine.google.com',
-    linkLabel: 'Create a search engine',
-  },
-  {
-    key: 'statsServiceUrl',
-    label: 'Stats Service URL',
-    placeholder: 'http://localhost:8000',
-    help: 'Where the roster/stats FastAPI service (stats_service.py) is running. Leave blank to use the default.',
-    link: null,
-    linkLabel: null,
-  },
 ];
 
 export default function ConnectPage() {
@@ -84,7 +60,7 @@ export default function ConnectPage() {
   }
 
   const connectedCount = savedKeys
-    ? Object.entries(savedKeys).filter(([k, v]) => k !== 'statsServiceUrl' && v.trim()).length
+    ? Object.values(savedKeys).filter((v) => v.trim()).length
     : 0;
   const isDirty = keys && savedKeys && JSON.stringify(keys) !== JSON.stringify(savedKeys);
 
@@ -92,7 +68,7 @@ export default function ConnectPage() {
     <>
       <h1 className="page-title">Connect APIs</h1>
       <p className="page-sub">
-        Thunder Hub calls a few free (and optional) APIs for news, sentiment, and
+        Thunder Mentions calls a few free (and optional) APIs for news, sentiment, and
         social data. Paste your own keys below — they&apos;re saved{' '}
         <strong>only in this browser&apos;s local storage</strong> and sent to this
         app&apos;s own <code>/api/*</code> routes with each request. Keys are never

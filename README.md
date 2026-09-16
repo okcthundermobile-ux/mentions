@@ -1,4 +1,4 @@
-# Thunder Hub
+# Thunder Mentions
 
 Four-page OKC Thunder site: **Roster & Stats** (`/`), **News** (`/news`),
 **Fan Pulse** sentiment analysis (`/pulse`), and **Connect APIs** (`/connect`)
@@ -86,7 +86,7 @@ firebase apphosting:secrets:grantaccess NEWS_API_KEY --project thunder-mentions
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com \
     artifactregistry.googleapis.com
 
-gcloud run deploy thunder-hub --source . --region us-central1 \
+gcloud run deploy thunder-mentions --source . --region us-central1 \
     --allow-unauthenticated \
     --set-env-vars GEMINI_API_KEY=your_key_here,NEWS_API_KEY=your_key_here,APIFY_API_TOKEN=your_token_here
 ```
