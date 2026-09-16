@@ -26,7 +26,10 @@ HEADSHOT = "https://cdn.nba.com/headshots/nba/latest/1040x760/{player_id}.png"
 app = FastAPI(title="Thunder Stats Service")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    # Read-only public NBA data with no auth — wildcard is fine. The
+    # Next.js app calls this server-to-server anyway (CORS doesn't apply),
+    # this just also allows calling it directly from a browser for testing.
+    allow_origins=["*"],
     allow_methods=["GET"],
 )
 

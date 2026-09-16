@@ -8,18 +8,29 @@ runConfig:
   cpu: 1
   memoryMiB: 512
 
-# No server-side secrets are required. Visitors can paste their own API keys
-# (Gemini, NewsAPI, Apify, Google CSE, stats service URL) on the /connect
-# page — they're stored in the browser only and sent with each request.
+# No server-side secrets are required for news/sentiment/social data.
+# Visitors can paste their own API keys (Gemini, NewsAPI, Apify) on the
+# /connect page — they're stored in the browser only and sent with each
+# request.
 #
-# If you'd rather configure keys once for everyone instead of per-visitor,
-# uncomment the block below AFTER creating the secrets and granting the App
-# Hosting backend access to them:
+# STATS_SERVICE_URL is the one exception: Roster & Stats data comes from
+# stats_service.py, a separate Python service that Firebase App Hosting
+# cannot run alongside the Next.js app. Deploy it (e.g. to Cloud Run — see
+# README.md "Hosting the stats service") and set its URL below. It's a
+# plain public URL, not a secret, so no Secret Manager access is needed.
+env:
+  - variable: STATS_SERVICE_URL
+    value: "https://REPLACE-ME-stats-service-url.a.run.app"
+    availability:
+      - RUNTIME
+#
+# If you'd rather configure Gemini/NewsAPI/Apify keys once for everyone
+# instead of per-visitor, add secret-backed entries here too AFTER creating
+# the secrets and granting the App Hosting backend access to them:
 #   firebase apphosting:secrets:set NEWS_API_KEY --project thunder-mentions
 #   firebase apphosting:secrets:grantaccess NEWS_API_KEY --project thunder-mentions
-#   (repeat for GEMINI_API_KEY, APIFY_API_TOKEN, etc.)
+#   (repeat for GEMINI_API_KEY, APIFY_API_TOKEN)
 #
-# env:
 #   - variable: NEWS_API_KEY
 #     secret: NEWS_API_KEY
 #     availability:

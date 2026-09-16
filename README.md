@@ -26,7 +26,7 @@ priority over env vars when both are present.
 | `NEWS_API_KEY` | News page + one Fan Pulse article source | https://newsapi.org/register (free) |
 | `APIFY_API_TOKEN` | Reddit + Twitter/X gathering, web-scraper articles | https://console.apify.com/account/integrations (free tier) |
 | `GOOGLE_CSE_KEY` / `GOOGLE_CSE_ID` | Optional extra article source | https://programmablesearchengine.google.com |
-| `STATS_SERVICE_URL` | Where `stats_service.py` is running | defaults to `http://localhost:8000` |
+| `STATS_SERVICE_URL` | Where `stats_service.py` is running | `http://localhost:8000` locally; deploy to Cloud Run for production (see below) |
 
 ## Run locally
 
@@ -34,7 +34,7 @@ You need two processes running:
 
 ```bash
 # 1. Stats microservice (official NBA Stats API via nba_api)
-pip install nba_api fastapi "uvicorn[standard]"
+pip install -r requirements.txt
 uvicorn stats_service:app --port 8000        # http://localhost:8000
 
 # 2. Next.js app
@@ -64,36 +64,53 @@ firebase apphosting:backends:create --project thunder-mentions
 firebase apphosting:rollouts:create BACKEND_ID
 ```
 
-No server-side secrets are required to deploy — visitors paste their own
-Gemini / NewsAPI / Apify keys on `/connect` and the app works immediately
-after rollout. If you'd rather configure keys once for everyone instead of
-per-visitor, create secrets and grant the backend access to them, then
-uncomment the `env:` block in `apphosting.yaml`:
+No Gemini/NewsAPI/Apify secrets are required to deploy — visitors paste
+their own keys on `/connect` and the app works immediately after rollout.
+If you'd rather configure those keys once for everyone instead of
+per-visitor, create secrets and grant the backend access to them, then add
+a secret-backed `env:` entry in `apphosting.yaml` (see the commented
+examples already in that file):
 
 ```bash
 firebase apphosting:secrets:set NEWS_API_KEY --project thunder-mentions
 firebase apphosting:secrets:grantaccess NEWS_API_KEY --project thunder-mentions
-# repeat for GEMINI_API_KEY, APIFY_API_TOKEN, etc.
+# repeat for GEMINI_API_KEY, APIFY_API_TOKEN
 ```
 
-- **Roster & Stats** needs `stats_service.py` hosted elsewhere (it is Python
-  and App Hosting only runs the Next.js app). Deploy it to Cloud Run and set
-  `STATS_SERVICE_URL` in `apphosting.yaml` to its public URL.
+- **Roster & Stats is the one feature that needs setup before it works on
+  the hosted site.** App Hosting only runs the Next.js app — it can't run
+  `stats_service.py` (a separate Python process). Deploy that service
+  somewhere reachable (see below), then set `STATS_SERVICE_URL` to its
+  public URL — it's already wired up as a plain (non-secret) `env:` entry
+  in `apphosting.yaml`, just replace the placeholder value.
 
-## Deploy to Cloud Run
+## Hosting the stats service
+
+`stats_service.py` needs to run as its own always-on service — Cloud Run
+is the natural choice since you're already on Firebase/GCP. This repo
+includes `Dockerfile.stats` + `requirements.txt` for exactly that:
 
 ```bash
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com \
-    artifactregistry.googleapis.com
+    artifactregistry.googleapis.com --project thunder-mentions
 
-gcloud run deploy thunder-mentions --source . --region us-central1 \
-    --allow-unauthenticated \
-    --set-env-vars GEMINI_API_KEY=your_key_here,NEWS_API_KEY=your_key_here,APIFY_API_TOKEN=your_token_here
+gcloud run deploy thunder-stats \
+  --source . \
+  --dockerfile Dockerfile.stats \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --project thunder-mentions
 ```
 
-Sentiment runs through the Gemini API with a plain key — no service
-accounts or key files to manage. The stats service is separate (see
-`stats_service.py`); point `STATS_SERVICE_URL` at wherever you host it.
+Copy the resulting `https://thunder-stats-xxxxx.a.run.app` URL into
+`STATS_SERVICE_URL` in `apphosting.yaml` (replacing the placeholder), then
+commit and redeploy the Next.js app. It's a public, read-only, no-auth
+service (just NBA roster/stats data), so `--allow-unauthenticated` is safe
+and no API key is involved.
+
+Any other host that can run a Python/Docker container (Render, Railway,
+Fly.io, a VPS) works the same way — build `Dockerfile.stats`, expose it
+publicly, and point `STATS_SERVICE_URL` at it.
 
 ## Where things live
 
@@ -103,6 +120,7 @@ accounts or key files to manage. The stats service is separate (see
 | `app/connect/` | Paste-your-own-API-keys settings page |
 | `app/api/*/route.js` | Server-side routes (keys stay off the browser) |
 | `stats_service.py` | FastAPI service: roster + stats from the NBA Stats API |
+| `Dockerfile.stats`, `requirements.txt` | Container build for hosting `stats_service.py` (e.g. on Cloud Run) |
 | `lib/news.js` | NewsAPI with date filtering |
 | `lib/reddit.js` | Reddit posts via the Apify `fatihtahta/reddit-scraper-search-fast` actor |
 | `lib/twitter.js` | Tweets via the Apify `apidojo/twitter-scraper-lite` actor |
