@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { apiKeysHeader } from '@/lib/clientKeys';
 
 export default function RosterPage() {
   const [players, setPlayers] = useState(null);
@@ -7,7 +8,7 @@ export default function RosterPage() {
   const [stats, setStats] = useState({}); // id -> stats | 'loading'
 
   useEffect(() => {
-    fetch('/api/players')
+    fetch('/api/players', { headers: apiKeysHeader() })
       .then((r) => r.json())
       .then((data) => (data.error ? setError(data.error) : setPlayers(data)))
       .catch(() => setError('Could not reach the stats service.'));
@@ -19,7 +20,7 @@ export default function RosterPage() {
       return;
     }
     setStats((s) => ({ ...s, [id]: 'loading' }));
-    const res = await fetch(`/api/players?id=${id}`);
+    const res = await fetch(`/api/players?id=${id}`, { headers: apiKeysHeader() });
     const data = await res.json();
     setStats((s) => ({ ...s, [id]: data }));
   }

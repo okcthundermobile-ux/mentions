@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
+import { apiKeysHeader } from '@/lib/clientKeys';
 
 const iso = (d) => d.toISOString().slice(0, 10);
 
@@ -17,7 +18,7 @@ export default function NewsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/news?from=${f}&to=${t}`);
+      const res = await fetch(`/api/news?from=${f}&to=${t}`, { headers: apiKeysHeader() });
       const data = await res.json();
       if (data.error) setError(data.error);
       else setResult(data);
@@ -76,8 +77,9 @@ export default function NewsPage() {
 
       {result?.noKey && (
         <p className="notice">
-          Add a NewsAPI key to <code>.env.local</code> to load Thunder news
-          (free at newsapi.org/register).
+          No NewsAPI key configured. <a href="/connect">Connect a NewsAPI key</a> to
+          load Thunder news (free at newsapi.org/register), or add
+          <code> NEWS_API_KEY</code> to <code>.env.local</code>.
         </p>
       )}
       {error && <p className="error">{error}</p>}

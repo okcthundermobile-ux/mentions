@@ -3,8 +3,10 @@ import { gatherPosts } from '@/lib/reddit';
 import { gatherArticles } from '@/lib/articles';
 import { gatherTweets } from '@/lib/twitter';
 import { buildReport } from '@/lib/sentiment';
+import { parseApiKeys } from '@/lib/serverKeys';
 
 export async function POST(request) {
+  const apiKeys = parseApiKeys(request);
   const { query, from, to, sources } = await request.json();
   if (!query || query.trim().length < 2) {
     return NextResponse.json({ error: 'Enter a player or topic to analyze.' }, { status: 400 });
@@ -25,15 +27,15 @@ export async function POST(request) {
     const range = from || to ? { from, to } : null;
     // Only crawl the sources the user selected. Disabled ones resolve to [].
     const [posts, tweets, articles] = await Promise.all([
-      use.reddit ? gatherPosts(q, range) : Promise.resolve([]),
-      use.twitter ? gatherTweets(q, range) : Promise.resolve([]),
-      use.news ? gatherArticles(q, range) : Promise.resolve([]),
+      use.reddit ? gatherPosts(q, range, apiKeys) : Promise.resolve([]),
+      use.twitter ? gatherTweets(q, range, apiKeys) : Promise.resolve([]),
+      use.news ? gatherArticles(q, range, apiKeys) : Promise.resolve([]),
     ]);
     const combined = [...posts, ...tweets, ...articles];
     if (combined.length === 0) {
       return NextResponse.json({ query: q, sampleSize: 0, range });
     }
-    const report = await buildReport(q, combined);
+    const report = await buildReport(q, combined, apiKeys);
     report.mix = {
       reddit: posts.length,
       tweets: tweets.length,

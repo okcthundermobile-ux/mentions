@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { apiKeysHeader } from '@/lib/clientKeys';
 
 const Badge = ({ type }) => {
   const cls = type === 'reddit' ? 'badge-reddit' : type === 'tweet' ? 'badge-tweet' : 'badge-article';
@@ -31,7 +32,7 @@ export default function PulsePage() {
     try {
       const res = await fetch('/api/sentiment', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...apiKeysHeader() },
         body: JSON.stringify({ query, from: from || undefined, to: to || undefined, sources }),
       });
       const data = await res.json();
@@ -48,8 +49,8 @@ export default function PulsePage() {
       <h1 className="page-title">Fan Pulse</h1>
       <p className="page-sub">
         Ask about any Thunder player or topic — &quot;SGA&quot;, &quot;Chet Holmgren&quot;,
-        &quot;trade deadline&quot;. Fan posts from Reddit and recent online articles are
-        gathered and scored with Gemini sentiment analysis. Every source is cited.
+        &quot;trade deadline&quot;. Fan posts from Reddit, Twitter/X, and recent online
+        articles are gathered and scored with Gemini sentiment analysis. Every source is cited.
       </p>
 
       <div className="pulse-form">

@@ -26,12 +26,13 @@ export default function RootLayout({ children }) {
             <a href="/">Roster</a>
             <a href="/news">News</a>
             <a href="/pulse">Fan Pulse</a>
+            <a href="/connect">Connect APIs</a>
           </nav>
         </header>
         <main>{children}</main>
         <Analytics />
         <footer className="site-footer">
-          Data: NBA Stats · NewsAPI · Reddit · Sentiment: Gemini API.
+          Data: NBA Stats · NewsAPI · Reddit · Twitter/X · Sentiment: Gemini API.
           Not affiliated with the NBA or the Oklahoma City Thunder.
         </footer>
       </body>

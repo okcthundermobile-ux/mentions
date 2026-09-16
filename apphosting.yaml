@@ -12,8 +12,11 @@ runConfig:
 # Create the secrets before the first rollout:
 #   firebase apphosting:secrets:set NEWS_API_KEY
 #   firebase apphosting:secrets:set GEMINI_API_KEY
-# The optional article sources (GOOGLE_CSE_KEY / APIFY_API_TOKEN) can be
+#   firebase apphosting:secrets:set APIFY_API_TOKEN
+# The optional article sources (GOOGLE_CSE_KEY / GOOGLE_CSE_ID) can be
 # added the same way later if you enable them.
+# Note: visitors can also paste their own keys on the /connect page instead
+# of relying on these server-side secrets.
 env:
   - variable: NEWS_API_KEY
     secret: NEWS_API_KEY
@@ -21,5 +24,9 @@ env:
       - RUNTIME
   - variable: GEMINI_API_KEY
     secret: GEMINI_API_KEY
+    availability:
+      - RUNTIME
+  - variable: APIFY_API_TOKEN
+    secret: APIFY_API_TOKEN
     availability:
       - RUNTIME

@@ -88,6 +88,20 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
 .btn-ghost { background: transparent; border: 1px solid var(--line); color: var(--muted); }
 .btn-ghost:hover { background: var(--card); color: var(--ink); }
 
+/* Connect APIs */
+.connect-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 8px; }
+.connect-field {
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: var(--shadow); padding: 16px;
+}
+.connect-field input {
+  width: 100%; background: var(--paper); border: 1px solid var(--line); color: var(--ink);
+  border-radius: 10px; padding: 10px 14px; font-family: var(--body); font-size: 14.5px;
+}
+.connect-help { color: var(--muted); font-size: 12.5px; margin-top: 8px; line-height: 1.5; }
+.connect-actions { display: flex; align-items: center; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+.connect-saved { padding: 0; color: var(--accent); font-weight: 600; }
+
 /* News */
 .news-search { flex: 1; min-width: 220px; }
 .news-search input { width: 100%; }
