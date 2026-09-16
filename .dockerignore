@@ -1,9 +1,0 @@
-# Keep the Cloud Run build context for Dockerfile.stats small — only
-# stats_service.py + requirements.txt are actually needed in that image.
-node_modules
-.next
-.git
-*.md
-app
-lib
-public

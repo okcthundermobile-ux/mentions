@@ -1,5 +1,0 @@
-# Python dependencies for stats_service.py (deployed separately from the
-# Next.js app — see README.md "Hosting the stats service" for deploy steps).
-fastapi>=0.115
-uvicorn[standard]>=0.30
-nba_api>=1.5
