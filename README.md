@@ -53,24 +53,29 @@ Then either open `/connect` and paste your keys in, or `cp .env.example
 ## Deploy to Firebase App Hosting
 
 The repo is App Hosting ready: `npm run build` produces a standard Next.js
-build and `apphosting.yaml` declares runtime config and secrets.
+build and `apphosting.yaml` declares the runtime config.
 
 ```bash
 # 1. Create the backend once (connects to this GitHub repo)
 firebase apphosting:backends:create --project thunder-mentions
 
-# 2. Store the API keys as secrets (values are read from stdin)
-firebase apphosting:secrets:set NEWS_API_KEY
-firebase apphosting:secrets:set GEMINI_API_KEY
-firebase apphosting:secrets:set APIFY_API_TOKEN
-
-# 3. Every push to the live branch triggers a rollout automatically,
+# 2. Every push to the live branch triggers a rollout automatically,
 #    or roll out manually:
 firebase apphosting:rollouts:create BACKEND_ID
 ```
 
-- News and Fan Pulse work as soon as the secrets above are set — or visitors
-  can paste their own keys on `/connect` instead.
+No server-side secrets are required to deploy — visitors paste their own
+Gemini / NewsAPI / Apify keys on `/connect` and the app works immediately
+after rollout. If you'd rather configure keys once for everyone instead of
+per-visitor, create secrets and grant the backend access to them, then
+uncomment the `env:` block in `apphosting.yaml`:
+
+```bash
+firebase apphosting:secrets:set NEWS_API_KEY --project thunder-mentions
+firebase apphosting:secrets:grantaccess NEWS_API_KEY --project thunder-mentions
+# repeat for GEMINI_API_KEY, APIFY_API_TOKEN, etc.
+```
+
 - **Roster & Stats** needs `stats_service.py` hosted elsewhere (it is Python
   and App Hosting only runs the Next.js app). Deploy it to Cloud Run and set
   `STATS_SERVICE_URL` in `apphosting.yaml` to its public URL.
